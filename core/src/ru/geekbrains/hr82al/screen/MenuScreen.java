@@ -9,14 +9,12 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.hr82al.base.Base2DScreen;
 
 public class MenuScreen extends Base2DScreen {
-    private SpriteBatch batch;
     private Texture img;
     private Texture movedImg;
 
     @Override
     public void show() {
         super.show();
-        batch = new SpriteBatch();
         img = new Texture("background.jpg");
         movedImg = new Texture("badlogic.jpg");
     }
@@ -26,16 +24,10 @@ public class MenuScreen extends Base2DScreen {
         super.render(delta);
         Gdx.gl.glClearColor(1, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.getProjectionMatrix().idt();
         batch.begin();
-        batch.draw(img, -1f, -1f, 2f, 2f);
-        batch.draw(movedImg, 0,0, 1f, 1f);
-        batch.end();;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+        batch.draw(img, -21f, -21f, 42f, 42f);
+        batch.draw(movedImg, 0,0, 21f, 21f);
+        batch.end();
     }
 
     @Override
@@ -45,7 +37,6 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public void dispose() {
-        batch.dispose();
         img.dispose();
         super.dispose();
     }
