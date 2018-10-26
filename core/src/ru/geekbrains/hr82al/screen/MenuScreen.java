@@ -37,7 +37,7 @@ public class MenuScreen extends Base2DScreen {
         buf.sub(position);
         steps = (int)(buf.len() / velocity.len());
         buf.nor();
-        direction = velocity.cpy();
+        direction.set(velocity);
         direction.scl(buf);
     }
 
