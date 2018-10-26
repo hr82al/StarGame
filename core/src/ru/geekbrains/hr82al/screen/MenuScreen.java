@@ -17,6 +17,7 @@ public class MenuScreen extends Base2DScreen {
     private Vector2 direction;
     private Vector2 destination;
     private int steps;
+    private Vector2 buf = new Vector2();
 
     @Override
     public void show() {
@@ -32,12 +33,12 @@ public class MenuScreen extends Base2DScreen {
     }
 
     private void setDirection(Vector2 position, Vector2 destination) {
-        Vector2 tmp = destination.cpy();
-        tmp.sub(position);
-        steps = (int)tmp.len() / (int)velocity.len();
-        tmp.nor();
+        buf.set(destination);
+        buf.sub(position);
+        steps = (int)(buf.len() / velocity.len());
+        buf.nor();
         direction = velocity.cpy();
-        direction.scl(tmp);
+        direction.scl(buf);
     }
 
     @Override
@@ -54,7 +55,7 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        destination.set(screenX, Gdx.graphics.getHeight() - screenY);
+        destination.set((float)screenX, Gdx.graphics.getHeight() - (float)screenY);
         setDirection(position, destination);
         return false;
     }
@@ -62,8 +63,8 @@ public class MenuScreen extends Base2DScreen {
     private void moveToDestination() {
         if (steps-- > 0) {
             position.add(direction);
-        } else if (position.x != destination.x && position.y != destination.y){
-            setDirection(position, destination);
+        } else {
+            position.set(destination);
         }
     }
 
