@@ -23,7 +23,7 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     private Vector2 touch;
 
-    private final static float WOLD_BOUND = 42f;
+    private final static float WOLD_BOUND = 1f;
 
     @Override
     public void show() {
