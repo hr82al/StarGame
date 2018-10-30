@@ -3,79 +3,98 @@ package ru.geekbrains.hr82al.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.hr82al.base.Base2DScreen;
-import ru.geekbrains.hr82al.base.Sprite;
+import ru.geekbrains.hr82al.math.Rect;
+import ru.geekbrains.hr82al.sprits.Background;
+import ru.geekbrains.hr82al.sprits.Star;
+import ru.geekbrains.hr82al.sprits.ScaledButton;
 
 public class MenuScreen extends Base2DScreen {
-    private Texture img;
-    private Texture movedImg;
-    private Sprite sprite;
-
-    private Vector2 touch;
-    private Vector2 position;
-    private Vector2 direction;
-    private int counter = 0;
-
-    private static final float VELOCITY = 0.14f;
+    private Texture bgTexture;
+    private TextureAtlas textureAtlas;
+    private Background background;
+    private Star[] stars;
+    private ScaledButton exitButton;
+    private ScaledButton playButton;
+    private static final int STARS_NUMBER = 256;
 
     @Override
     public void show() {
         super.show();
-        direction = new Vector2();
-        img = new Texture("background.jpg");
-        movedImg = new Texture("badlogic.jpg");
-        touch = new Vector2();
-        position = new Vector2(0f, 0f);
-        sprite = new Sprite(new TextureRegion(movedImg));
-        sprite.setWidth(0.5f);
-        sprite.setHeight(0.5f);
+        bgTexture = new Texture("bg.png");
+        background = new Background(new TextureRegion(bgTexture));
+        textureAtlas = new TextureAtlas("menuAtlas.tpack");
+        stars = new Star[STARS_NUMBER];
+        for (int i = 0; i < stars.length; i++) {
+            stars[i] = new Star(textureAtlas);
+        }
+        exitButton = new ScaledButton(textureAtlas, "btExit", 0);
+        playButton = new ScaledButton(textureAtlas, "btPlay", 1);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        Gdx.gl.glClearColor(1, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(img, -0.5f, -0.5f, 1f, 1f);
-        //batch.draw(movedImg, position.x, position.y, 12f, 12f);
-        sprite.draw(batch);
-        batch.end();
-        stepMove();
+        update(delta);
+        draw();
     }
 
-    private void stepMove() {
-        if (counter-- > 0) {
-            position.add(direction);
-        } else {
-            position.set(touch);
+    private void update(float delta) {
+        for (Star star : stars) {
+            star.update(delta);
         }
+    }
+
+    public void draw() {
+        Gdx.gl.glClearColor(0.3f, 0.88f, 0.6f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        background.draw(batch);
+        for (Star star : stars) {
+            star.draw(batch);
+        }
+        exitButton.draw(batch);
+        playButton.draw(batch);
+        batch.end();
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        background.resize(worldBounds);
+        for (Star star : stars) {
+            star.resize(worldBounds);
+        }
+        exitButton.resize();
+        playButton.resize();
+    }
+
+    @Override
+    public boolean touchDown(Vector2 touch, int pointer) {
+        exitButton.touchDown(touch, pointer);
+        playButton.touchDown(touch, pointer);
+        return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        this.touch.set(touch);
-        setDirection();
+        exitButton.touchUp(touch, pointer);
+        playButton.touchUp(touch, pointer);
         return false;
     }
 
-    private void setDirection() {
-        direction.set(touch);
-        counter =  (int)(direction.sub(position).len() / VELOCITY);
-        direction.nor().scl(VELOCITY);
+    @Override
+    public void dispose() {
+        bgTexture.dispose();
+        textureAtlas.dispose();
+        super.dispose();
     }
 
     @Override
     public void hide() {
         dispose();
-    }
-
-    @Override
-    public void dispose() {
-        img.dispose();
-        super.dispose();
     }
 }
