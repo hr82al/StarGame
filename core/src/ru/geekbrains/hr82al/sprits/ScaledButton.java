@@ -35,6 +35,7 @@ public class ScaledButton extends Sprite {
     public boolean touchUp(Vector2 touch, int pointer) {
         scale = 1f;
         if (isMe(touch) && pressed) {
+            pressed = false;
             if (buttonName.equals("btExit")) {
                 Gdx.app.exit();
             }
