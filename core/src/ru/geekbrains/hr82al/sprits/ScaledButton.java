@@ -9,6 +9,7 @@ import ru.geekbrains.hr82al.base.Sprite;
 public class ScaledButton extends Sprite {
     private int buttonPosition;
     private String buttonName;
+    private boolean pressed = false;
 
     public ScaledButton(TextureAtlas atlas, String buttonName, int buttonPosition) {
         super(atlas.findRegion(buttonName));
@@ -25,6 +26,7 @@ public class ScaledButton extends Sprite {
     public boolean touchDown(Vector2 touch, int pointer) {
         if(isMe(touch)) {
             scale = 0.8f;
+            pressed = true;
         }
         return false;
     }
@@ -32,7 +34,7 @@ public class ScaledButton extends Sprite {
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
         scale = 1f;
-        if (isMe(touch)) {
+        if (isMe(touch) && pressed) {
             if (buttonName.equals("btExit")) {
                 Gdx.app.exit();
             }
