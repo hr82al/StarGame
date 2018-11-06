@@ -43,13 +43,6 @@ public class ScaledButton extends Sprite {
                 actionListener.actionPerformed(this);
             }
         }
-
-        /*if (isMe(touch) && pressed) {
-            pressed = false;
-            if (buttonName.equals("btExit")) {
-                Gdx.app.exit();
-            }
-        }*/
         return false;
     }
 

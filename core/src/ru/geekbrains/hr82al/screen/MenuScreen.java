@@ -1,5 +1,6 @@
 package ru.geekbrains.hr82al.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +16,7 @@ import ru.geekbrains.hr82al.sprits.Star;
 import ru.geekbrains.hr82al.sprits.ScaledButton;
 
 public class MenuScreen extends Base2DScreen {
+    private Game game;
     private Texture bgTexture;
     private TextureAtlas textureAtlas;
     private Background background;
@@ -22,6 +24,11 @@ public class MenuScreen extends Base2DScreen {
     private ScaledButton exitButton;
     private ScaledButton playButton;
     private static final int STARS_NUMBER = 256;
+
+    public MenuScreen(Game game) {
+        super();
+        this.game = game;
+    }
 
     @Override
     public void show() {
@@ -36,6 +43,9 @@ public class MenuScreen extends Base2DScreen {
         exitButton = new ScaledButton(textureAtlas, "btExit", 0);
         exitButton.setActionListener(src -> Gdx.app.exit());
         playButton = new ScaledButton(textureAtlas, "btPlay", 1);
+        playButton.setActionListener(src -> {
+            game.setScreen(new GameSceen());
+        });
     }
 
     @Override
@@ -90,8 +100,6 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public void dispose() {
-        bgTexture.dispose();
-        textureAtlas.dispose();
         super.dispose();
     }
 
