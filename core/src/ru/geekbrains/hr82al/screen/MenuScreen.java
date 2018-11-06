@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import ru.geekbrains.hr82al.base.ActionListener;
 import ru.geekbrains.hr82al.base.Base2DScreen;
 import ru.geekbrains.hr82al.math.Rect;
 import ru.geekbrains.hr82al.sprits.Background;
@@ -33,6 +34,7 @@ public class MenuScreen extends Base2DScreen {
             stars[i] = new Star(textureAtlas);
         }
         exitButton = new ScaledButton(textureAtlas, "btExit", 0);
+        exitButton.setActionListener(src -> Gdx.app.exit());
         playButton = new ScaledButton(textureAtlas, "btPlay", 1);
     }
 
