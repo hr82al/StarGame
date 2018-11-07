@@ -1,6 +1,8 @@
 package ru.geekbrains.hr82al.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -22,6 +24,8 @@ public class GameSceen extends Base2DScreen {
     private Background background;
     private MainShip mainShip;
     private BulletPool bulletPool;
+    private Music music;
+    private Sound soundShoot;
 
     @Override
     public void show() {
@@ -34,7 +38,11 @@ public class GameSceen extends Base2DScreen {
             stars[i] = new Star(textureAtlas);
         }
         bulletPool = new BulletPool();
-        mainShip = new MainShip(textureAtlas, bulletPool);
+        soundShoot = Gdx.audio.newSound(Gdx.files.internal("gun-gunshot-01.mp3"));
+        mainShip = new MainShip(textureAtlas, bulletPool, soundShoot);
+        music = Gdx.audio.newMusic(Gdx.files.internal("battleMusic.mp3"));
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
@@ -118,6 +126,8 @@ public class GameSceen extends Base2DScreen {
     public void dispose() {
         bgTexture.dispose();
         textureAtlas.dispose();
+        music.dispose();
+        soundShoot.dispose();
         super.dispose();
     }
 }
