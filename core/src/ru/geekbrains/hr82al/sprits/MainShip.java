@@ -1,7 +1,6 @@
 package ru.geekbrains.hr82al.sprits;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
@@ -13,18 +12,16 @@ public class MainShip extends Sprite {
     private Vector2 velocity0 = new Vector2(0.5f, 0f);
     private Vector2 velocity = new Vector2();
     private boolean pressedLeft;
-    private boolean pressedRight;
+    private boolean pressetRight;
     private BulletPool bulletPool;
     private TextureAtlas atlas;
     private Rect worldBounds;
-    private Sound soundShoot;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool, Sound soundShoot) {
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         setHeightProportion(0.15f);
         this.bulletPool = bulletPool;
         this.atlas = atlas;
-        this.soundShoot = soundShoot;
     }
 
     @Override
@@ -35,34 +32,13 @@ public class MainShip extends Sprite {
 
     @Override
     public void update(float delta) {
-        stayInside();
-        pos.mulAdd(velocity, delta);
-
-
+        pos.mulAdd(velocity,delta);
     }
-
-    private void stayInside() {
-        if(getRight() > worldBounds.getRight()) {
-            setRight(worldBounds.getRight());
-            stop();
-        } else if (getLeft() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getLeft());
-            stop();
-        }
-    }
-
-/*    private boolean isInside() {
-        if (getRight() < worldBounds.getRight()) {
-            return true;
-        } else {
-            return false;
-        }
-    }*/
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
         if (touch.x > 0) {
-            pressedRight = true;
+            pressetRight = true;
             moveRight();
         } else {
             pressedLeft = true;
@@ -73,9 +49,8 @@ public class MainShip extends Sprite {
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        System.out.println("right: " + getRight() + " bound right: " + worldBounds.getRight());
         if (touch.x > 0) {
-            pressedRight = false;
+            pressetRight = false;
             if (pressedLeft) {
                 moveLeft();
             } else {
@@ -83,7 +58,7 @@ public class MainShip extends Sprite {
             }
         } else {
             pressedLeft = false;
-            if (pressedRight) {
+            if (pressetRight) {
                 moveRight();
             } else {
                 stop();
@@ -102,7 +77,7 @@ public class MainShip extends Sprite {
                 break;
             case Input.Keys.D:
             case Input.Keys.RIGHT:
-                pressedRight = true;
+                pressetRight = true;
                 moveRight();
                 break;
         }
@@ -114,16 +89,11 @@ public class MainShip extends Sprite {
         switch (keycode) {
             case Input.Keys.A:
             case Input.Keys.LEFT:
-                pressedLeft = false;
-                if (pressedRight) {
-                    moveRight();
-                } else {
-                    stop();
-                }
+
                 break;
             case Input.Keys.D:
             case Input.Keys.RIGHT:
-                pressedRight = false;
+                pressetRight = false;
                 if (pressedLeft) {
                     moveLeft();
                 } else {
@@ -152,9 +122,7 @@ public class MainShip extends Sprite {
 
     private void shoot() {
         Bullet bullet = bulletPool.obtain();
-        soundShoot.play();
         bullet.set(this, atlas.findRegion("bulletMainShip"), pos,
                 new Vector2(0, 0.5f), 0.01f, worldBounds, 1);
     }
-
 }
