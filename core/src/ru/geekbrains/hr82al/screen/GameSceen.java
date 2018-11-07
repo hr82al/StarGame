@@ -12,6 +12,7 @@ import ru.geekbrains.hr82al.math.Rect;
 import ru.geekbrains.hr82al.sprits.Background;
 import ru.geekbrains.hr82al.sprits.MainShip;
 import ru.geekbrains.hr82al.sprits.Star;
+import ru.geekbrains.hr82al.pool.BulletPool;
 
 public class GameSceen extends Base2DScreen {
     private static final int STARS_NUMBER = 64;
@@ -20,6 +21,7 @@ public class GameSceen extends Base2DScreen {
     private Texture bgTexture;
     private Background background;
     private MainShip mainShip;
+    private BulletPool bulletPool;
 
     @Override
     public void show() {
@@ -31,7 +33,8 @@ public class GameSceen extends Base2DScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(textureAtlas);
         }
-        mainShip = new MainShip(textureAtlas);
+        bulletPool = new BulletPool();
+        mainShip = new MainShip(textureAtlas, bulletPool);
     }
 
     @Override
@@ -48,6 +51,7 @@ public class GameSceen extends Base2DScreen {
             star.update(delta);
         }
         mainShip.update(delta);
+        bulletPool.updateActiveObjects(delta);
     }
 
     public void checkCollisions() {
@@ -55,7 +59,7 @@ public class GameSceen extends Base2DScreen {
     }
 
     public void deleteAllDestroyed() {
-
+        bulletPool.freeAllDestroyedActiveObjects();
     }
 
     public void draw() {
@@ -67,6 +71,7 @@ public class GameSceen extends Base2DScreen {
             star.draw(batch);
         }
         mainShip.draw(batch);
+        bulletPool.drawActiveObjects(batch);
         batch.end();
     }
 
@@ -94,11 +99,13 @@ public class GameSceen extends Base2DScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
+        mainShip.touchDown(touch, pointer);
         return super.touchDown(touch, pointer);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
+        mainShip.touchUp(touch, pointer);
         return super.touchUp(touch, pointer);
     }
 
