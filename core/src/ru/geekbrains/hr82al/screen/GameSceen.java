@@ -127,7 +127,6 @@ public class GameSceen extends Base2DScreen {
         bgTexture.dispose();
         textureAtlas.dispose();
         music.dispose();
-        soundShoot.dispose();
         super.dispose();
     }
 }
