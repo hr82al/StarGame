@@ -35,10 +35,8 @@ public class MainShip extends Sprite {
 
     @Override
     public void update(float delta) {
-        stayInside();
         pos.mulAdd(velocity, delta);
-
-
+        stayInside();
     }
 
     private void stayInside() {
@@ -50,14 +48,6 @@ public class MainShip extends Sprite {
             stop();
         }
     }
-
-/*    private boolean isInside() {
-        if (getRight() < worldBounds.getRight()) {
-            return true;
-        } else {
-            return false;
-        }
-    }*/
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
@@ -114,9 +104,9 @@ public class MainShip extends Sprite {
         switch (keycode) {
             case Input.Keys.A:
             case Input.Keys.LEFT:
-                pressedRight = false;
-                if (pressedLeft) {
-                    moveLeft();
+                pressedLeft = false;
+                if (pressedRight) {
+                    moveRight();
                 } else {
                     stop();
                 }
