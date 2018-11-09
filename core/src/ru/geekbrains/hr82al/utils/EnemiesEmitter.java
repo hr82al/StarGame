@@ -19,6 +19,24 @@ public class EnemiesEmitter {
     private TextureRegion[] enemySmallRegion;
     private Vector2 enemeySmallV = new Vector2(0f, -0.2f);
 
+    private static final float ENEMY_MEDIUM_HEIGHT = 0.1f;
+    private static final float ENEMY_MEDIUM_BULLET_HEIGHT = 0.02f;
+    private static final float ENEMY_MEDIUM_BULLET_VY = -0.3f;
+    private static final int ENEMY_MEDIUM_BULLET_DAMAGE = 5;
+    private static final float ENEMY_MEDIUM_RELOAD_INTERVAL = 4f;
+    private static final int ENEMY_MEDIUM_HP = 5;
+    private TextureRegion[] enemyMediumRegion;
+    private Vector2 enemeyMediumV = new Vector2(0f, -0.03f);
+
+    private static final float ENEMY_BIG_HEIGHT = 0.2f;
+    private static final float ENEMY_BIG_BULLET_HEIGHT = 0.06f;
+    private static final float ENEMY_BIG_BULLET_VY = -0.25f;
+    private static final int ENEMY_BIG_BULLET_DAMAGE = 12;
+    private static final float ENEMY_BIG_RELOAD_INTERVAL = 4f;
+    private static final int ENEMY_BIG_HP = 20;
+    private TextureRegion[] enemyBigRegion;
+    private Vector2 enemeyBigV = new Vector2(0f, -0.005f);
+
     private EnemyPool enemyPool;
     private Rect worldBounds;
     private TextureRegion bulletRegion;
@@ -28,8 +46,14 @@ public class EnemiesEmitter {
     public EnemiesEmitter(EnemyPool enemyPool, Rect worldBounds, TextureAtlas atlas) {
         this.enemyPool = enemyPool;
         this.worldBounds = worldBounds;
+
         TextureRegion textureRegion0 = atlas.findRegion("enemy0");
         this.enemySmallRegion = Regions.split(textureRegion0, 1, 2, 2);
+        TextureRegion textureRegion1 = atlas.findRegion("enemy1");
+        this.enemyMediumRegion = Regions.split(textureRegion1, 1, 2, 2);
+        TextureRegion textureRegion2 = atlas.findRegion("enemy2");
+        this.enemyBigRegion = Regions.split(textureRegion2, 1, 2, 2);
+
         this.bulletRegion = atlas.findRegion("bulletEnemy");
     }
 
@@ -37,22 +61,48 @@ public class EnemiesEmitter {
         generateTimer += delta;
         if (generateTimer >= generateInterval) {
             generateTimer = 0f;
+            float type = (float) Math.random();
             Enemy enemy = enemyPool.obtain();
-            enemy.set(
-                    enemySmallRegion,
-                    enemeySmallV,
-                    bulletRegion,
-                    ENEMY_SMALL_BULLET_HEIGHT,
-                    ENEMY_SMALL_BULLET_VY,
-                    ENEMY_SMALL_BULLET_DAMAGE,
-                    ENEMY_SMALL_RELOAD_INTERVAL,
-                    ENEMY_SMALL_HEIGHT,
-                    ENEMY_SMALL_HP
-            );
+            if (type < 0.7) {
+                enemy.set(
+                        enemySmallRegion,
+                        enemeySmallV,
+                        bulletRegion,
+                        ENEMY_SMALL_BULLET_HEIGHT,
+                        ENEMY_SMALL_BULLET_VY,
+                        ENEMY_SMALL_BULLET_DAMAGE,
+                        ENEMY_SMALL_RELOAD_INTERVAL,
+                        ENEMY_SMALL_HEIGHT,
+                        ENEMY_SMALL_HP
+                );
+            } else if (type < 0.9){
+                enemy.set(
+                        enemyMediumRegion,
+                        enemeyMediumV,
+                        bulletRegion,
+                        ENEMY_MEDIUM_BULLET_HEIGHT,
+                        ENEMY_MEDIUM_BULLET_VY,
+                        ENEMY_MEDIUM_BULLET_DAMAGE,
+                        ENEMY_MEDIUM_RELOAD_INTERVAL,
+                        ENEMY_MEDIUM_HEIGHT,
+                        ENEMY_MEDIUM_HP
+                );
+            } else {
+                enemy.set(
+                        enemyBigRegion,
+                        enemeyBigV,
+                        bulletRegion,
+                        ENEMY_BIG_BULLET_HEIGHT,
+                        ENEMY_BIG_BULLET_VY,
+                        ENEMY_BIG_BULLET_DAMAGE,
+                        ENEMY_BIG_RELOAD_INTERVAL,
+                        ENEMY_BIG_HEIGHT,
+                        ENEMY_BIG_HP
+                );
+            }
             enemy.setBottom(worldBounds.getTop());
             enemy.pos.x = Rnd.nextFloat(worldBounds.getLeft() + enemy.getHalfWidth(),
                     worldBounds.getRight() - enemy.getHalfWidth());
         }
-
     }
 }
