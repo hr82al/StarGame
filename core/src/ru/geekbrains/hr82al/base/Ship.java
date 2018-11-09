@@ -1,6 +1,6 @@
 package ru.geekbrains.hr82al.base;
 
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -12,15 +12,32 @@ public class Ship extends Sprite {
     protected Vector2 v = new Vector2();
     protected BulletPool bulletPool;
     protected Rect worldBounds;
-    protected TextureAtlas atlas;
     protected Vector2 bulletV = new Vector2();
     protected float bulletHeight;
     protected int bulletDamage;
     protected float reloadInterval;
     protected float reloadTimer;
+    protected int hp;
+    protected TextureRegion bulletRegion;
+    private Sound soundShoot;
 
-    public Ship(TextureRegion region, int rows, int cols, int frames) {
+    public Ship(TextureRegion region, int rows, int cols, int frames, Sound soundShoot) {
         super(region, rows, cols, frames);
+        this.soundShoot = soundShoot;
+    }
+
+    public Ship(Sound soundShoot) {
+        this.soundShoot = soundShoot;
+    }
+
+    protected void stayInside() {
+        if(getRight() > worldBounds.getRight()) {
+            setRight(worldBounds.getRight());
+            stop();
+        } else if (getLeft() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getLeft());
+            stop();
+        }
     }
 
     @Override
@@ -28,9 +45,14 @@ public class Ship extends Sprite {
         this.worldBounds = worldBounds;
     }
 
+    protected void stop() {
+        v.setZero();
+    }
+
     protected void shoot() {
         Bullet bullet = bulletPool.obtain();
-        bullet.set(this, atlas.findRegion("bulletMainShip"), pos,
+        soundShoot.play();
+        bullet.set(this, bulletRegion, pos,
                 bulletV, bulletHeight, worldBounds, bulletDamage);
     }
 }

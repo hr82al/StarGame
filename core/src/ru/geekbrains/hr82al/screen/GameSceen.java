@@ -11,10 +11,12 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.hr82al.base.Base2DScreen;
 import ru.geekbrains.hr82al.math.Rect;
+import ru.geekbrains.hr82al.pool.EnemyPool;
 import ru.geekbrains.hr82al.sprits.Background;
 import ru.geekbrains.hr82al.sprits.MainShip;
 import ru.geekbrains.hr82al.sprits.Star;
 import ru.geekbrains.hr82al.pool.BulletPool;
+import ru.geekbrains.hr82al.utils.EnemiesEmitter;
 
 public class GameSceen extends Base2DScreen {
     private static final int STARS_NUMBER = 64;
@@ -25,7 +27,10 @@ public class GameSceen extends Base2DScreen {
     private MainShip mainShip;
     private BulletPool bulletPool;
     private Music music;
-    private Sound soundShoot;
+    private Sound laserSound;
+    private Sound bulletSound;
+    private EnemyPool enemyPool;
+    private EnemiesEmitter enemiesEmitter;
 
     @Override
     public void show() {
@@ -38,8 +43,11 @@ public class GameSceen extends Base2DScreen {
             stars[i] = new Star(textureAtlas);
         }
         bulletPool = new BulletPool();
-        soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
-        mainShip = new MainShip(textureAtlas, bulletPool, soundShoot);
+        laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+        mainShip = new MainShip(textureAtlas, bulletPool, laserSound);
+        enemyPool = new EnemyPool(bulletPool, worldBounds, bulletSound);
+        enemiesEmitter = new EnemiesEmitter(enemyPool, worldBounds, textureAtlas);
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
         music.play();
@@ -60,6 +68,8 @@ public class GameSceen extends Base2DScreen {
         }
         mainShip.update(delta);
         bulletPool.updateActiveObjects(delta);
+        enemyPool.updateActiveObjects(delta);
+        enemiesEmitter.generate(delta);
     }
 
     public void checkCollisions() {
@@ -80,6 +90,7 @@ public class GameSceen extends Base2DScreen {
         }
         mainShip.draw(batch);
         bulletPool.drawActiveObjects(batch);
+        enemyPool.drawActiveObjects(batch);
         batch.end();
     }
 
@@ -126,6 +137,7 @@ public class GameSceen extends Base2DScreen {
     public void dispose() {
         bgTexture.dispose();
         textureAtlas.dispose();
+        bulletSound.dispose();
         music.dispose();
         super.dispose();
     }
