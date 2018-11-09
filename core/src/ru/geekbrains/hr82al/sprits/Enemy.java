@@ -9,7 +9,8 @@ import ru.geekbrains.hr82al.math.Rect;
 import ru.geekbrains.hr82al.pool.BulletPool;
 
 public class Enemy extends Ship {
-    private Vector2 v0 = new Vector2();
+    private Vector2 v0 = new Vector2(0f, -0.2f); // The initial velocity.
+    private Vector2 battleV = new Vector2();
 
     public Enemy(BulletPool bulletPool, Rect worldBounds, Sound soundShot) {
         super(soundShot);
@@ -22,11 +23,19 @@ public class Enemy extends Ship {
     public void update(float delta) {
         super.update(delta);
         pos.mulAdd(v, delta);
+        if (getTop() < this.worldBounds.getTop()) {
+            this.v.set(battleV);
+        }
+        reloadTimer += delta;
+        if (reloadTimer >= reloadInterval) {
+            shoot();
+            reloadTimer = 0f;
+        }
     }
 
     public void set(
             TextureRegion[] regions,
-            Vector2 v0,
+            Vector2 shipV,
             TextureRegion bulletRegion,
             float bulletHeight,
             float bulletVY,
@@ -36,7 +45,7 @@ public class Enemy extends Ship {
             int hp
     ) {
         this.regions = regions;
-        this.v0.set(v0);
+        //this.v0.set(v0);
         this.bulletRegion = bulletRegion;
         this.bulletRegion = bulletRegion;
         this.bulletHeight = bulletHeight;
@@ -45,6 +54,8 @@ public class Enemy extends Ship {
         this.reloadInterval = reloadInterval;
         this.hp = hp;
         setHeightProportion(height);
-        v.set(v0);
+        //v.set(v0);
+        //v.set(v0);
+        this.battleV.set(shipV);
     }
 }
