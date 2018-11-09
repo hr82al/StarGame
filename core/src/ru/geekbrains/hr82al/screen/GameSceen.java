@@ -38,9 +38,9 @@ public class GameSceen extends Base2DScreen {
             stars[i] = new Star(textureAtlas);
         }
         bulletPool = new BulletPool();
-        soundShoot = Gdx.audio.newSound(Gdx.files.internal("gun-gunshot-01.mp3"));
+        soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         mainShip = new MainShip(textureAtlas, bulletPool, soundShoot);
-        music = Gdx.audio.newMusic(Gdx.files.internal("battleMusic.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
         music.play();
     }
