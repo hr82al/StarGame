@@ -102,11 +102,6 @@ public class Rect {
         return getLeft() > other.getRight() || getRight() < other.getLeft() || getBottom() > other.getTop() || getTop() < other.getBottom();
     }
 
-    public boolean isInside(Rect other) {
-        return getLeft() > other.getLeft() && getRight() < other.getRight() &&
-                getTop() < other.getTop() && getBottom() > getBottom();
-    }
-
     @Override
     public String toString() {
         return "Rectangle: pos" + pos + " size(" + getWidth() + ", " + getHeight() + ")";

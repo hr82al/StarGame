@@ -26,6 +26,9 @@ public class Enemy extends Ship {
         if (getTop() < this.worldBounds.getTop()) {
             this.v.set(battleV);
         }
+        if (isOutside(worldBounds)) {
+            destroy();
+        }
         reloadTimer += delta;
         if (reloadTimer >= reloadInterval) {
             shoot();
@@ -45,7 +48,6 @@ public class Enemy extends Ship {
             int hp
     ) {
         this.regions = regions;
-        //this.v0.set(v0);
         this.bulletRegion = bulletRegion;
         this.bulletRegion = bulletRegion;
         this.bulletHeight = bulletHeight;
@@ -54,8 +56,6 @@ public class Enemy extends Ship {
         this.reloadInterval = reloadInterval;
         this.hp = hp;
         setHeightProportion(height);
-        //v.set(v0);
-        //v.set(v0);
         this.battleV.set(shipV);
     }
 }
