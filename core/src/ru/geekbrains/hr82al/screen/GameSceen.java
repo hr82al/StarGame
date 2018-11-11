@@ -1,4 +1,4 @@
-package ru.geekbrains.hr82al.screen;
+ package ru.geekbrains.hr82al.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.hr82al.base.Base2DScreen;
 import ru.geekbrains.hr82al.math.Rect;
 import ru.geekbrains.hr82al.pool.EnemyPool;
+import ru.geekbrains.hr82al.pool.ExplosionPool;
 import ru.geekbrains.hr82al.sprits.Background;
 import ru.geekbrains.hr82al.sprits.MainShip;
 import ru.geekbrains.hr82al.sprits.Star;
@@ -31,6 +32,7 @@ public class GameSceen extends Base2DScreen {
     private Sound bulletSound;
     private EnemyPool enemyPool;
     private EnemiesEmitter enemiesEmitter;
+    private ExplosionPool explosionPool;
 
     @Override
     public void show() {
@@ -42,11 +44,12 @@ public class GameSceen extends Base2DScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(textureAtlas);
         }
+        explosionPool = new ExplosionPool(textureAtlas);
         bulletPool = new BulletPool();
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
         mainShip = new MainShip(textureAtlas, bulletPool, laserSound);
-        enemyPool = new EnemyPool(bulletPool, worldBounds, bulletSound);
+        enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, bulletSound);
         enemiesEmitter = new EnemiesEmitter(enemyPool, worldBounds, textureAtlas);
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         music.setLooping(true);
@@ -69,6 +72,7 @@ public class GameSceen extends Base2DScreen {
         mainShip.update(delta);
         bulletPool.updateActiveObjects(delta);
         enemyPool.updateActiveObjects(delta);
+        explosionPool.updateActiveObjects(delta);
         enemiesEmitter.generate(delta);
     }
 
@@ -79,6 +83,7 @@ public class GameSceen extends Base2DScreen {
     public void deleteAllDestroyed() {
         bulletPool.freeAllDestroyedActiveObjects();
         enemyPool.freeAllDestroyedActiveObjects();
+        explosionPool.freeAllDestroyedActiveObjects();
     }
 
     public void draw() {
@@ -89,9 +94,10 @@ public class GameSceen extends Base2DScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        mainShip.draw(batch);
         bulletPool.drawActiveObjects(batch);
+        mainShip.draw(batch);
         enemyPool.drawActiveObjects(batch);
+        explosionPool.drawActiveObjects(batch);
         batch.end();
     }
 
