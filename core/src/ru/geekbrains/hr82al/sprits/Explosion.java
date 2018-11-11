@@ -11,13 +11,15 @@ public class Explosion extends Sprite {
     private float animateTimer;
     Sound sound;
 
-    public Explosion(TextureRegion region, int rows, int cols, int frames) {
+    public Explosion(TextureRegion region, int rows, int cols, int frames, Sound sound) {
         super(region, rows, cols, frames);
+        this.sound = sound;
     }
 
     public void set(float height, Vector2 pos){
         this.pos.set(pos);
         setHeightProportion(height);
+        sound.play();
     }
 
     @Override

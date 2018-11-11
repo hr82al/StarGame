@@ -30,6 +30,7 @@ public class GameSceen extends Base2DScreen {
     private Music music;
     private Sound laserSound;
     private Sound bulletSound;
+    private Sound explosionSound;
     private EnemyPool enemyPool;
     private EnemiesEmitter enemiesEmitter;
     private ExplosionPool explosionPool;
@@ -44,10 +45,11 @@ public class GameSceen extends Base2DScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(textureAtlas);
         }
-        explosionPool = new ExplosionPool(textureAtlas);
-        bulletPool = new BulletPool();
         laserSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion.wav"));
+        explosionPool = new ExplosionPool(textureAtlas, explosionSound);
+        bulletPool = new BulletPool();
         mainShip = new MainShip(textureAtlas, bulletPool, laserSound);
         enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, bulletSound);
         enemiesEmitter = new EnemiesEmitter(enemyPool, worldBounds, textureAtlas);
@@ -145,6 +147,8 @@ public class GameSceen extends Base2DScreen {
         bgTexture.dispose();
         textureAtlas.dispose();
         bulletSound.dispose();
+        laserSound.dispose();
+        explosionSound.dispose();
         music.dispose();
         super.dispose();
     }
