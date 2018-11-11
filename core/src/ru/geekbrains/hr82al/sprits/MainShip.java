@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.hr82al.base.Ship;
 import ru.geekbrains.hr82al.pool.BulletPool;
 import ru.geekbrains.hr82al.math.Rect;
+import ru.geekbrains.hr82al.pool.ExplosionPool;
 
 public class MainShip extends Ship {
     private static final int INVALID_POINTER = -1;  //There aren't touches.
@@ -18,7 +19,7 @@ public class MainShip extends Ship {
     private int rightPointer = INVALID_POINTER;
     private TextureAtlas atlas;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool, Sound soundShoot) {
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound soundShoot) {
         super(atlas.findRegion("main_ship"), 1, 2, 2, soundShoot);
         setHeightProportion(0.15f);
         this.bulletPool = bulletPool;
@@ -28,6 +29,8 @@ public class MainShip extends Ship {
         this.bulletDamage = 1;
         this.reloadInterval = 0.2f;
         this.bulletRegion = atlas.findRegion("bulletMainShip");
+        this.explosionPool = explosionPool;
+        this.hp = 100;
     }
 
     @Override
@@ -38,6 +41,7 @@ public class MainShip extends Ship {
 
     @Override
     public void update(float delta) {
+        super.update(delta);
         pos.mulAdd(v, delta);
         reloadTimer += delta;
         if (reloadTimer >= reloadInterval) {
@@ -133,5 +137,19 @@ public class MainShip extends Ship {
 
     private void moveLeft() {
         v.set(v0).rotate(180);
+    }
+
+    public boolean isBulletCollision(Rect bullet) {
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > pos.y
+                || bullet.getTop() < getBottom());
+    }
+
+    @Override
+    public void destroy() {
+        boom();
+        hp = 0;
+        super.destroy();
     }
 }
