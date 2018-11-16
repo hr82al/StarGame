@@ -1,33 +1,32 @@
 package ru.geekbrains.hr82al.sprits;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.sun.org.apache.bcel.internal.generic.ALOAD;
 
 import ru.geekbrains.hr82al.base.Sprite;
 import ru.geekbrains.hr82al.base.ActionListener;
 
 public class ScaledButton extends Sprite {
     private ActionListener actionListener;
-    private int buttonPosition;
     private boolean pressed = false;
     private int pointer;
+    private static final float PRESSED_SCALE = 0.8f;
 
     public ScaledButton(TextureAtlas atlas, String buttonName, int buttonPosition) {
         super(atlas.findRegion(buttonName));
-        this.buttonPosition = buttonPosition;
+        this.pos.set(0f ,-0.34f + 0.3f * buttonPosition + getHalfHeight());
         setHeightProportion(0.15f);
     }
 
-    public void resize() {
-        pos.set(0f ,-0.34f + 0.3f * buttonPosition + getHalfHeight());
+    public ScaledButton(TextureRegion region) {
+        super(region);
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
         if(isMe(touch)) {
-            scale = 0.8f;
+            scale = PRESSED_SCALE;
             pressed = true;
             this.pointer = pointer;
         }

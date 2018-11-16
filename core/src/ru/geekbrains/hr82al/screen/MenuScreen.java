@@ -41,11 +41,20 @@ public class MenuScreen extends Base2DScreen {
             stars[i] = new Star(textureAtlas);
         }
         exitButton = new ScaledButton(textureAtlas, "btExit", 0);
-        exitButton.setActionListener(src -> Gdx.app.exit());
+        exitButton.setActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(Object src) {
+                        Gdx.app.exit();
+                    }
+                });
         playButton = new ScaledButton(textureAtlas, "btPlay", 1);
-        playButton.setActionListener(src -> {
-            game.setScreen(new GameSceen());
-        });
+        playButton.setActionListener(new ActionListener() {
+                                         @Override
+                                         public void actionPerformed(Object src) {
+                                             game.setScreen(new GameSceen());
+                                         }
+                                     });
     }
 
     @Override
@@ -80,8 +89,8 @@ public class MenuScreen extends Base2DScreen {
         for (Star star : stars) {
             star.resize(worldBounds);
         }
-        exitButton.resize();
-        playButton.resize();
+        exitButton.resize(worldBounds);
+        playButton.resize(worldBounds);
     }
 
     @Override

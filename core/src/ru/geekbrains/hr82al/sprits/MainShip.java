@@ -19,18 +19,26 @@ public class MainShip extends Ship {
     private int rightPointer = INVALID_POINTER;
     private TextureAtlas atlas;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound soundShoot) {
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool,
+                    Rect worldBounds, Sound soundShoot) {
         super(atlas.findRegion("main_ship"), 1, 2, 2, soundShoot);
         setHeightProportion(0.15f);
         this.bulletPool = bulletPool;
         this.atlas = atlas;
+        this.bulletRegion = atlas.findRegion("bulletMainShip");
+        this.explosionPool = explosionPool;
+        this.worldBounds = worldBounds;
+        startNewGame();
+    }
+
+    public void startNewGame() {
+        pos.x = worldBounds.pos.x;
         this.bulletV.set(0, 0.5f);
         this.bulletHeight = 0.01f;
         this.bulletDamage = 1;
         this.reloadInterval = 0.2f;
-        this.bulletRegion = atlas.findRegion("bulletMainShip");
-        this.explosionPool = explosionPool;
         this.hp = 100;
+        flushDestroy();
     }
 
     @Override

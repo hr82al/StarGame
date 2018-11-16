@@ -85,7 +85,6 @@ public abstract class Ship extends Sprite {
         }
     }
 
-    // TODO: 11/11/18  
     public int getHp() {
         return hp;
     }

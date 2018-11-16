@@ -27,7 +27,6 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        System.out.println("show");
         this.batch = new SpriteBatch();
         Gdx.input.setInputProcessor(this);
         this.screeBounds = new Rect();
@@ -45,7 +44,6 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        System.out.println("resize width: " + width + " height: " + height);
         screeBounds.setSize(width, height);
         screeBounds.setLeft(0);
         screeBounds.setBottom(0);
@@ -64,24 +62,24 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void pause() {
-        System.out.println("pause");
+        //System.out.println("pause");
     }
 
     @Override
     public void resume() {
-        System.out.println("resume");
+        //System.out.println("resume");
     }
 
     @Override
     public void hide() {
-        System.out.println("hide");
+        //System.out.println("hide");
         dispose();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        System.out.println("dispose");
+        //System.out.println("dispose");
     }
 
     @Override
@@ -107,7 +105,7 @@ public class Base2DScreen implements Screen, InputProcessor {
     }
 
     public boolean touchDown(Vector2 touch, int pointer) {
-        System.out.println("touchDown touch.x = " + touch.x + " touch.y = " + touch.y);
+        //System.out.println("touchDown touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }
 
@@ -119,7 +117,7 @@ public class Base2DScreen implements Screen, InputProcessor {
     }
 
     public boolean touchUp(Vector2 touch, int pointer) {
-        System.out.println("touchUp touch.x = " + touch.x + " touch.y = " + touch.y);
+        //System.out.println("touchUp touch.x = " + touch.x + " touch.y = " + touch.y);
         return false;
     }
 
