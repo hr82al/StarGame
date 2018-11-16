@@ -9,7 +9,7 @@ import ru.geekbrains.hr82al.math.Rect;
 public class Bullet extends Sprite {
     private Rect worldBounds;
     private Vector2 v = new Vector2();
-    private int damge;
+    private int damage;
     private Object owner;
 
     public Bullet() {
@@ -31,7 +31,7 @@ public class Bullet extends Sprite {
         this.v.set(v0);
         setHeightProportion(height);
         this.worldBounds = worldBounds;
-        this.damge = damage;
+        this.damage = damage;
     }
 
     @Override
@@ -42,12 +42,12 @@ public class Bullet extends Sprite {
         }
     }
 
-    public int getDamge() {
-        return damge;
+    public int getDamage() {
+        return damage;
     }
 
-    public void setDamge(int damge) {
-        this.damge = damge;
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
     public Object getOwner() {

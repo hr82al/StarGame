@@ -8,13 +8,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.List;
 
-import jdk.nashorn.internal.runtime.WithObject;
 import ru.geekbrains.hr82al.base.ActionListener;
 import ru.geekbrains.hr82al.base.Base2DScreen;
-import ru.geekbrains.hr82al.base.Sprite;
+import ru.geekbrains.hr82al.base.Font;
 import ru.geekbrains.hr82al.math.Rect;
 import ru.geekbrains.hr82al.pool.EnemyPool;
 import ru.geekbrains.hr82al.pool.ExplosionPool;
@@ -30,7 +30,7 @@ import ru.geekbrains.hr82al.utils.EnemiesEmitter;
 
 public class GameSceen extends Base2DScreen {
     private static final int STARS_NUMBER = 64;
-    private enum State {PLAING, GAME_OVER};
+    private enum State {PLAYING, GAME_OVER};
     private State state;
     private int frags;
     private TextureAtlas textureAtlas;
@@ -48,6 +48,13 @@ public class GameSceen extends Base2DScreen {
     private EnemyPool enemyPool;
     private EnemiesEmitter enemiesEmitter;
     private ExplosionPool explosionPool;
+    private Font font;
+    private static final String FRAGS = "Frags: ";
+    private static final String HP = "HP: ";
+    private static final String LEVEL = "Level: ";
+    private StringBuilder sbFrags = new StringBuilder();
+    private StringBuilder sbHP = new StringBuilder();
+    private StringBuilder sbLevel = new StringBuilder();
 
     @Override
     public void show() {
@@ -76,6 +83,8 @@ public class GameSceen extends Base2DScreen {
         mainShip = new MainShip(textureAtlas, bulletPool, explosionPool, worldBounds, laserSound);
         enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, bulletSound);
         enemiesEmitter = new EnemiesEmitter(enemyPool, worldBounds, textureAtlas);
+        font = new Font("font/font.fnt", "font/font.png");
+        font.setFontSize(0.02f);
         music.setLooping(true);
         music.play();
         startNewGame();
@@ -85,7 +94,7 @@ public class GameSceen extends Base2DScreen {
     public void render(float delta) {
         super.render(delta);
         update(delta);
-        if (state == State.PLAING) {
+        if (state == State.PLAYING) {
             checkCollisions();
         }
         deleteAllDestroyed();
@@ -97,11 +106,11 @@ public class GameSceen extends Base2DScreen {
             star.update(delta);
         }
         switch (state) {
-            case PLAING:
+            case PLAYING:
                 mainShip.update(delta);
                 bulletPool.updateActiveObjects(delta);
                 enemyPool.updateActiveObjects(delta);
-                enemiesEmitter.generate(delta);
+                enemiesEmitter.generate(delta, frags);
                 if (mainShip.isDestroyed()) {
                     state = State.GAME_OVER;
                 }
@@ -134,7 +143,7 @@ public class GameSceen extends Base2DScreen {
             }
             if (mainShip.isBulletCollision(bullet)) {
                 bullet.destroy();
-                mainShip.damage(bullet.getDamge());
+                mainShip.damage(bullet.getDamage());
                 if (mainShip.isDestroyed()) {
                     state = State.GAME_OVER;
                 }
@@ -151,7 +160,7 @@ public class GameSceen extends Base2DScreen {
                 }
                 if (enemy.isBulletCollision(bullet)) {
                     bullet.destroy();
-                    enemy.damage(bullet.getDamge());
+                    enemy.damage(bullet.getDamage());
                     if (enemy.isDestroyed()) {
                         frags++;
                     }
@@ -183,7 +192,20 @@ public class GameSceen extends Base2DScreen {
             enemyPool.drawActiveObjects(batch);
         }
         explosionPool.drawActiveObjects(batch);
+        printInfo();
         batch.end();
+    }
+
+    public  void printInfo() {
+        sbFrags.setLength(0);
+        sbHP.setLength(0);
+        sbLevel.setLength(0);
+        font.draw(batch,sbFrags.append(FRAGS).append(frags), worldBounds.getLeft(),
+                worldBounds.getTop());
+        font.draw(batch,sbHP.append(HP).append(mainShip.getHP()), worldBounds.pos.x,
+                worldBounds.getTop(), Align.center);
+        font.draw(batch,sbLevel.append(LEVEL).append(enemiesEmitter.getLevel()), worldBounds.getRight(),
+                worldBounds.getTop(), Align.right);
     }
 
     @Override
@@ -199,7 +221,7 @@ public class GameSceen extends Base2DScreen {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (state == State.PLAING) {
+        if (state == State.PLAYING) {
             mainShip.keyDown(keycode);
         }
         return super.keyDown(keycode);
@@ -207,7 +229,7 @@ public class GameSceen extends Base2DScreen {
 
     @Override
     public boolean keyUp(int keycode) {
-        if (state == State.PLAING) {
+        if (state == State.PLAYING) {
             mainShip.keyUp(keycode);
         }
         return super.keyUp(keycode);
@@ -215,7 +237,7 @@ public class GameSceen extends Base2DScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        if (state == State.PLAING) {
+        if (state == State.PLAYING) {
             mainShip.touchDown(touch, pointer);
         } else {
             buttonNewGame.touchDown(touch, pointer);
@@ -226,7 +248,7 @@ public class GameSceen extends Base2DScreen {
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
 
-        if (state == State.PLAING) {
+        if (state == State.PLAYING) {
             mainShip.touchUp(touch, pointer);
         } else {
             buttonNewGame.touchUp(touch, pointer);
@@ -235,7 +257,8 @@ public class GameSceen extends Base2DScreen {
     }
 
     private void startNewGame() {
-        state = State.PLAING;
+        state = State.PLAYING;
+        enemiesEmitter.setLevel(1);
         frags = 0;
         mainShip.startNewGame();
         bulletPool.freeAllActiveObjects();
@@ -255,6 +278,7 @@ public class GameSceen extends Base2DScreen {
         bulletSound.dispose();
         laserSound.dispose();
         explosionSound.dispose();
+        font.dispose();
         music.dispose();
         super.dispose();
     }
