@@ -12,22 +12,27 @@ import ru.geekbrains.hr82al.pool.ExplosionPool;
 
 public class MainShip extends Ship {
     private static final int INVALID_POINTER = -1;  //There aren't touches.
+    public static final int MAX_HP = 100;
+    public static final float HEIGHT = 0.15f;
     private Vector2 v0 = new Vector2(0.5f, 0f);
     private boolean pressedLeft;
     private boolean pressedRight;
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
     private TextureAtlas atlas;
+    private HPIndicator hpIndicator;
 
     public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool,
-                    Rect worldBounds, Sound soundShoot) {
+                    Rect worldBounds, Sound soundShoot, HPIndicator hpIndicator) {
         super(atlas.findRegion("main_ship"), 1, 2, 2, soundShoot);
-        setHeightProportion(0.15f);
+        setHeightProportion(HEIGHT);
         this.bulletPool = bulletPool;
         this.atlas = atlas;
         this.bulletRegion = atlas.findRegion("bulletMainShip");
         this.explosionPool = explosionPool;
         this.worldBounds = worldBounds;
+        this.hpIndicator = hpIndicator;
+        this.hpIndicator.setHeight(this.getHeight()*0.25f);
         startNewGame();
     }
 
@@ -37,7 +42,7 @@ public class MainShip extends Ship {
         this.bulletHeight = 0.01f;
         this.bulletDamage = 1;
         this.reloadInterval = 0.2f;
-        this.hp = 100;
+        this.hp = MAX_HP;
         flushDestroy();
     }
 
@@ -45,12 +50,14 @@ public class MainShip extends Ship {
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         setBottom(worldBounds.getBottom() + 0.05f);
+        hpIndicator.pos.set(pos);
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
         pos.mulAdd(v, delta);
+        hpIndicator.pos.set(pos.x, getBottom() - 0.02f);
         reloadTimer += delta;
         if (reloadTimer >= reloadInterval) {
             shoot();

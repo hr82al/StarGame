@@ -52,7 +52,7 @@ public class MenuScreen extends Base2DScreen {
         playButton.setActionListener(new ActionListener() {
                                          @Override
                                          public void actionPerformed(Object src) {
-                                             game.setScreen(new GameSceen());
+                                             game.setScreen(new GameScreen());
                                          }
                                      });
     }

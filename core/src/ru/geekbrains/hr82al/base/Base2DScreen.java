@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -13,6 +14,7 @@ import ru.geekbrains.hr82al.math.Rect;
 
 public class Base2DScreen implements Screen, InputProcessor {
     protected SpriteBatch batch;
+    protected ShapeRenderer shapeRenderer;
 
     private Rect screeBounds; // границы облачти рисования в пикселях
     protected Rect worldBounds; // границы проекции мпровых координат
@@ -28,6 +30,7 @@ public class Base2DScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         this.batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
         this.screeBounds = new Rect();
         this.worldBounds = new Rect();
@@ -53,6 +56,7 @@ public class Base2DScreen implements Screen, InputProcessor {
         worldBounds.setWidth(WOLD_BOUND*aspect);
         MatrixUtils.calcTransitionMatrix(worldToGl, worldBounds, glBounds);
         batch.setProjectionMatrix(worldToGl);
+        shapeRenderer.setProjectionMatrix(worldToGl);
         MatrixUtils.calcTransitionMatrix(screenToWold, screeBounds, worldBounds);
         resize(worldBounds);
     }

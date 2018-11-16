@@ -1,7 +1,6 @@
 package ru.geekbrains.hr82al.sprits;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,7 +13,7 @@ public class Enemy extends Ship {
     private enum State {DESCENT, FIGHT};
     private State state;
     private Vector2 v0 = new Vector2();
-    private Vector2 descenV = new Vector2(0f, -0.2f); // The initial velocity.
+    private Vector2 descentV = new Vector2(0f, -0.2f); // The initial velocity.
 
     public Enemy(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds, Sound soundShot) {
         super(soundShot);
@@ -71,7 +70,7 @@ public class Enemy extends Ship {
         this.hp = hp;
         setHeightProportion(height);
         this.v0.set(v0);
-        v.set(descenV);
+        v.set(descentV);
         state = State.DESCENT;
     }
 

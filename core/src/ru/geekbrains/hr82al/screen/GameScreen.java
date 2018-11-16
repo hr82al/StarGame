@@ -22,13 +22,14 @@ import ru.geekbrains.hr82al.sprits.Background;
 import ru.geekbrains.hr82al.sprits.Bullet;
 import ru.geekbrains.hr82al.sprits.ButtonNewGame;
 import ru.geekbrains.hr82al.sprits.Enemy;
+import ru.geekbrains.hr82al.sprits.HPIndicator;
 import ru.geekbrains.hr82al.sprits.MainShip;
 import ru.geekbrains.hr82al.sprits.MessageGameOver;
 import ru.geekbrains.hr82al.sprits.Star;
 import ru.geekbrains.hr82al.pool.BulletPool;
 import ru.geekbrains.hr82al.utils.EnemiesEmitter;
 
-public class GameSceen extends Base2DScreen {
+public class GameScreen extends Base2DScreen {
     private static final int STARS_NUMBER = 64;
     private enum State {PLAYING, GAME_OVER};
     private State state;
@@ -55,6 +56,7 @@ public class GameSceen extends Base2DScreen {
     private StringBuilder sbFrags = new StringBuilder();
     private StringBuilder sbHP = new StringBuilder();
     private StringBuilder sbLevel = new StringBuilder();
+    private HPIndicator hpIndicator;
 
     @Override
     public void show() {
@@ -80,7 +82,8 @@ public class GameSceen extends Base2DScreen {
         music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         explosionPool = new ExplosionPool(textureAtlas, explosionSound);
         bulletPool = new BulletPool();
-        mainShip = new MainShip(textureAtlas, bulletPool, explosionPool, worldBounds, laserSound);
+        hpIndicator = new HPIndicator(MainShip.MAX_HP, MainShip.HEIGHT);
+        mainShip = new MainShip(textureAtlas, bulletPool, explosionPool, worldBounds, laserSound, hpIndicator);
         enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds, bulletSound);
         enemiesEmitter = new EnemiesEmitter(enemyPool, worldBounds, textureAtlas);
         font = new Font("font/font.fnt", "font/font.png");
@@ -119,6 +122,8 @@ public class GameSceen extends Base2DScreen {
                 break;
         }
         explosionPool.updateActiveObjects(delta);
+        hpIndicator.setHP(mainShip.getHP());
+        hpIndicator.update();
     }
 
     public void checkCollisions() {
@@ -194,6 +199,7 @@ public class GameSceen extends Base2DScreen {
         explosionPool.drawActiveObjects(batch);
         printInfo();
         batch.end();
+        hpIndicator.draw(shapeRenderer);
     }
 
     public  void printInfo() {
